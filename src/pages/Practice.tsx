@@ -41,8 +41,10 @@ function Practice() {
     setIsComplete(false);
     setSecondsLeft(minutes * 60);
     setIsActive(true);
-    if (bellMode === "both") {
-      setTimeout(() => playStartBell(), 3000); // start bell after 3s
+
+    // Schedule start bell after 3 seconds if applicable
+    if (bellMode === "both" || bellMode === "start") {
+      setTimeout(() => playStartBell(), 3000);
     }
   };
 
@@ -60,22 +62,23 @@ function Practice() {
       setSecondsLeft((prev) => {
         if (prev <= 0) return 0;
 
-        // Schedule end bell 5 seconds before session ends
-        if (bellMode === "both" || bellMode === "end") {
-          if (prev <= 5 && prev > 0) {
-            playEndBell();
-          }
-        }
-
+        // When timer reaches 0, end session
         if (prev === 1) {
           clearInterval(timer);
           setIsActive(false);
           setIsComplete(true);
-          // Removed direct call to playEndBell() here
+
+          // Play end bell if applicable
+          if (bellMode === "both" || bellMode === "end") {
+            playEndBell();
+          }
+
+          // Record session only once
           if (!hasRecordedRef.current) {
             addSession(minutes);
             hasRecordedRef.current = true;
           }
+
           return 0;
         }
 
@@ -84,7 +87,7 @@ function Practice() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [isActive]);
+  }, [isActive, bellMode, minutes, addSession]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -103,7 +106,30 @@ function Practice() {
         position: "relative",
       }}
     >
-      <div style={{ maxWidth: "600px", margin: "0 auto", color: "white", display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "80vh" }}>
+      {/* Overlay for active session */}
+      {isActive && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0,0,0,0.35)",
+            zIndex: 1,
+          }}
+        ></div>
+      )}
+      <div style={{
+        maxWidth: "600px",
+        margin: "0 auto",
+        color: "white",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-start",
+        minHeight: "80vh",
+        paddingTop: "60px", // Added top padding to prevent overlap with back arrow
+      }}>
         <h1 style={{ color: "white" }}>Practice</h1>
         {module && (
           <div style={{ marginTop: "10px" }}>
@@ -237,6 +263,8 @@ function Practice() {
             border: "1px solid rgba(255,255,255,0.08)",
             backdropFilter: "blur(8px)",
             boxShadow: "0 6px 20px rgba(0,0,0,0.3)",
+            position: isActive ? "relative" : undefined,
+            zIndex: isActive ? 2 : undefined,
           }}
         >
           {!isActive && !isComplete && (
@@ -356,30 +384,67 @@ function Practice() {
             </>
           )}
           {isActive && (
-            <>
-              <p style={{ textAlign: "center", opacity: 0.7, marginTop: "10px" }}>
+            <div
+              style={{
+                position: "relative",
+                zIndex: 2,
+                marginTop: "40px",
+                padding: "60px 24px",
+                borderRadius: "20px",
+                background: "linear-gradient(180deg, rgba(18,22,34,0.8), rgba(18,22,34,0.6))",
+                border: "1px solid rgba(255,255,255,0.08)",
+                backdropFilter: "blur(14px)",
+                boxShadow: "0 14px 35px rgba(0,0,0,0.55)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                maxWidth: "480px",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            >
+              <p style={{
+                textAlign: "center",
+                fontSize: "16px",
+                opacity: 0.8,
+                fontStyle: "italic",
+                marginBottom: "24px",
+                color: "rgba(255,255,255,0.85)"
+              }}>
                 Rest your attention on the breath
               </p>
-              <h2 style={{ fontSize: "64px", textAlign: "center", marginTop: "20px", letterSpacing: "1px" }}>
+              <h2 style={{
+                fontSize: "84px",
+                textAlign: "center",
+                margin: "0 0 36px 0",
+                letterSpacing: "2px",
+                fontWeight: 600,
+                color: "#FFF"
+              }}>
                 {formatTime(secondsLeft)}
               </h2>
-
-              <div style={{ marginTop: "20px" }}>
+              <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
                 <button
                   onClick={endSession}
                   style={{
-                    padding: "10px 16px",
-                    borderRadius: "8px",
-                    border: "1px solid rgba(255,255,255,0.2)",
-                    background: "rgba(255,255,255,0.05)",
-                    color: "white",
+                    padding: "14px 28px",
+                    borderRadius: "12px",
+                    border: "none",
+                    background: "linear-gradient(180deg, #ffffff, #e6e6e6)",
+                    color: "#111",
+                    fontWeight: 600,
+                    fontSize: "16px",
                     cursor: "pointer",
+                    boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
+                    minWidth: "160px",
+                    textAlign: "center"
                   }}
                 >
                   End Session
                 </button>
               </div>
-            </>
+            </div>
           )}
           {isComplete && (
             <>

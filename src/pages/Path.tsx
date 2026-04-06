@@ -67,6 +67,7 @@ function Path() {
           navigate(`/stage/${current.id}`);
         }}
         style={{
+          position: "relative",
           marginTop: "40px",
           borderRadius: "16px",
           padding: "24px",
@@ -86,9 +87,20 @@ function Path() {
           lineHeight: 1.8,
           cursor: "pointer",
           userSelect: "none",
+          transition: "transform 0.2s, box-shadow 0.2s, border-color 0.2s",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "scale(1.02)";
+          e.currentTarget.style.boxShadow = "0 14px 35px rgba(0,0,0,0.55)";
+          e.currentTarget.style.borderColor = "#FFD700"; // gold highlight on hover
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "scale(1)";
+          e.currentTarget.style.boxShadow = "0 12px 30px rgba(0,0,0,0.45)";
+          e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
         }}
       >
-        <h3 style={{ color: "#BFA86A", marginTop: 0 }}>{current.title}</h3>
+        <h3 style={{ color: "#BFA86A", marginTop: 0, display: "inline-block", fontSize: "16px" }}>{current.title}</h3>
         <div
           style={{
             marginTop: "8px",
@@ -112,6 +124,22 @@ function Path() {
         >
           {current.symbolicLine}
         </p>
+        <div
+          style={{
+            position: "absolute",
+            bottom: "16px",
+            right: "16px",
+            width: "14px",
+            height: "14px",
+            borderRadius: "50%",
+            backgroundColor: "#FFD700", // gold circle
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <span style={{ color: "#111", fontWeight: "bold", fontSize: "12px" }}>▼</span> {/* chevron inside */}
+        </div>
       </div>
 
       {/* Navigation Buttons */}
