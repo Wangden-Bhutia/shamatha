@@ -1,0 +1,14 @@
+/* Reset default margins and paddings */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  background-color: #121622; /* Dark background to match app theme */
+  font-family: 'Georgia', serif;
+  overflow-x: hidden; /* Prevent horizontal scroll on mobile */
+}
