@@ -1,20 +1,11 @@
-export type Module = {
-  id: number;
-  title: string;
-  level: "Beginner" | "Intermediate" | "Advanced";
-  what: string;
-  how: string[];
-  feel: string;
-  mistake: string;
-  instruction: string;
-  imbalance: string;
-  symbolicLine: string;
-};
+
+import type { Module } from "../domain/types/domain";
 
 export const modules: Module[] = [
   {
     id: 1,
     title: "Stage 1 — Placing the Mind",
+    description: "Learning to place attention gently on the breath for the first time.",
     level: "Beginner",
     what: "You are learning to briefly place attention on the breath.",
     how: [
@@ -31,6 +22,7 @@ export const modules: Module[] = [
   {
     id: 2,
     title: "Stage 2 — Continuous Placement",
+    description: "Developing short periods of continuous attention before distraction interrupts.",
     level: "Beginner",
     what: "You can now stay with the breath for a few moments before the mind drifts away. Attention still breaks often, but there are short periods where it remains on the breath.",
     how: [
@@ -47,6 +39,7 @@ export const modules: Module[] = [
   {
     id: 3,
     title: "Stage 3 — Repeated Placement",
+    description: "Recognizing distraction earlier and returning attention more quickly.",
     level: "Beginner",
     what: "You start noticing distraction sooner. The mind still leaves the breath often, but you catch it earlier and return more quickly.",
     how: [
@@ -63,6 +56,7 @@ export const modules: Module[] = [
   {
     id: 4,
     title: "Stage 4 — Close Placement",
+    description: "Attention remains closer to the breath with fewer major distractions.",
     level: "Intermediate",
     what: "Distractions begin to reduce. The mind still moves, but it no longer fully leaves the breath as often. Attention stays closer to the object.",
     how: [
@@ -79,6 +73,7 @@ export const modules: Module[] = [
   {
     id: 5,
     title: "Stage 5 — Taming the Mind",
+    description: "Strengthening clarity while maintaining stable attention.",
     level: "Intermediate",
     what: "Attention is now mostly stable on the breath, but it begins to lose sharpness. The mind does not wander much, but it becomes dull or heavy.",
     how: [
@@ -95,6 +90,7 @@ export const modules: Module[] = [
   {
     id: 6,
     title: "Stage 6 — Pacifying",
+    description: "Balancing subtle dullness and subtle agitation through careful awareness.",
     level: "Intermediate",
     what: "Attention is stable and clearer, but small imbalances still arise. You begin to notice both subtle dullness and subtle agitation and learn to correct them.",
     how: [
@@ -111,6 +107,7 @@ export const modules: Module[] = [
   {
     id: 7,
     title: "Stage 7 — Fully Pacified",
+    description: "Attention becomes calm, stable, and increasingly effortless.",
     level: "Advanced",
     what: "Attention now remains on the breath with very little effort. Distractions and dullness still appear occasionally, but they are weak and quickly settle on their own.",
     how: [
@@ -127,6 +124,7 @@ export const modules: Module[] = [
   {
     id: 8,
     title: "Stage 8 — Single-Pointed Attention",
+    description: "Single-pointed continuity emerges with very little instability.",
     level: "Advanced",
     what: "Attention is now continuous and almost never leaves the breath. The mind remains stable without effort, and disturbances are very rare.",
     how: [
@@ -143,6 +141,7 @@ export const modules: Module[] = [
   {
     id: 9,
     title: "Stage 9 — Balanced Placement",
+    description: "Balanced effortless attention remains naturally stable and clear.",
     level: "Advanced",
     what: "Attention rests effortlessly and continuously on the breath. There is no need to maintain or correct it. Stability and clarity are both naturally present.",
     how: [

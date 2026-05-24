@@ -1,13 +1,10 @@
-export type Question = {
-  id: number;
-  text: string;
-  options: string[];
-};
+import type { AssessmentQuestion } from "../domain/types/domain";
 
-export const questions: Question[] = [
+export const questions: AssessmentQuestion[] = [
   {
     id: 1,
     text: "When you begin watching the breath, what usually happens within a few seconds?",
+    category: "attention",
     options: [
       "My mind immediately runs away into thoughts",
       "I can stay briefly, then I lose it",
@@ -19,6 +16,7 @@ export const questions: Question[] = [
   {
     id: 2,
     text: "How quickly do you notice distraction?",
+    category: "attention",
     options: [
       "Long after I’m lost",
       "After some time",
@@ -30,6 +28,7 @@ export const questions: Question[] = [
   {
     id: 3,
     text: "What usually pulls your attention away from the breath?",
+    category: "attention",
     options: [
       "My mind runs into thoughts constantly",
       "I keep losing the breath again and again",
@@ -41,6 +40,7 @@ export const questions: Question[] = [
   {
     id: 4,
     text: "What does your effort feel like while staying with the breath?",
+    category: "attention",
     options: [
       "I’m forcing myself to stay and it feels strained",
       "I’m trying to hold attention and keep it from slipping",
@@ -52,6 +52,7 @@ export const questions: Question[] = [
   {
     id: 5,
     text: "When you stay with the breath, how does the continuity actually feel?",
+    category: "attention",
     options: [
       "It keeps breaking almost immediately",
       "It stays for a moment, then breaks again",

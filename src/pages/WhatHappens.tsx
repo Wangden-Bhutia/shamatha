@@ -1,6 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import backgroundImg from "../assets/background.jpeg";
+
+const hiddenScrollbarStyles = `
+  .what-happens-card::-webkit-scrollbar {
+    display: none;
+  }
+`;
 
 const sections = [
   {
@@ -43,7 +47,9 @@ const sections = [
 
 const WhatHappens = () => {
   const [index, setIndex] = useState(0);
-  const navigate = useNavigate();
+  const [touchStartX, setTouchStartX] = useState(0);
+  const [touchEndX, setTouchEndX] = useState(0);
+  const [direction, setDirection] = useState<"left" | "right">("left");
 
   const next = () => {
     if (index < sections.length - 1) setIndex(index + 1);
@@ -58,136 +64,191 @@ const WhatHappens = () => {
   return (
     <div
       style={{
-        minHeight: "100vh",
-        padding: "24px 16px",
-        backgroundImage: `url(${backgroundImg})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        padding: "24px 16px 48px",
+        height: "auto",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      {/* Back Button */}
-      <div style={{ position: "absolute", top: "20px", left: "16px" }}>
-        <button
-          onClick={() => navigate("/", { replace: true })}
-          style={{
-            padding: "8px 12px",
-            fontSize: "18px",
-            borderRadius: "8px",
-            border: "1px solid rgba(255,255,255,0.2)",
-            background: "rgba(255,255,255,0.05)",
-            color: "white",
-            cursor: "pointer",
-          }}
-        >
-          ←
-        </button>
-      </div>
-
-      <h1
-        style={{
-          marginTop: "48px",
-          color: "white",
-          fontSize: "28px",
-          fontWeight: 400,
-          fontFamily: "'Georgia', serif",
-          textShadow: "0 3px 14px rgba(0,0,0,0.5)"
-        }}
-      >
-        What Happens in Meditation?
-      </h1>
+      <style>{hiddenScrollbarStyles}</style>
 
       {/* Section Card */}
       <div
+        className="what-happens-card"
+        onTouchStart={(e) => {
+          setTouchStartX(e.changedTouches[0].screenX);
+        }}
+        onTouchEnd={(e) => {
+          const endX = e.changedTouches[0].screenX;
+
+          setTouchEndX(endX);
+
+          const swipeDistance = touchStartX - endX;
+
+          if (
+            swipeDistance > 60 &&
+            index < sections.length - 1
+          ) {
+            setDirection("left");
+            setIndex(index + 1);
+          }
+
+          if (
+            swipeDistance < -60 &&
+            index > 0
+          ) {
+            setDirection("right");
+            setIndex(index - 1);
+          }
+        }}
         style={{
-          marginTop: "48px",
+          marginTop: "12px",
           borderRadius: "16px",
-          padding: "24px",
-          background: "linear-gradient(180deg, rgba(18,22,34,0.75), rgba(18,22,34,0.55))",
-          borderTop: "3px solid #BFA86A",
-          border: "1px solid rgba(255,255,255,0.08)",
-          backdropFilter: "blur(8px)",
-          boxShadow: "0 12px 30px rgba(0,0,0,0.45)",
-          maxWidth: "600px",
+          padding: window.innerWidth < 640 ? "22px 18px" : "24px 22px",
+          minHeight: window.innerWidth < 640 ? "320px" : "340px",
+          maxHeight: window.innerWidth < 640 ? "420px" : "440px",
+          overflowY: "auto",
+          overflowX: "hidden",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+          background: "rgba(255,255,255,0.04)",
+          border: "1px solid rgba(255,255,255,0.06)",
+          backdropFilter: "blur(12px)",
+          boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
+          maxWidth: "760px",
+          width: "100%",
           textAlign: "justify",
           color: "rgba(255,255,255,0.9)",
           fontFamily: "'Georgia', serif",
           lineHeight: 1.8,
+          transition:
+            "transform 340ms cubic-bezier(0.22, 1, 0.36, 1), opacity 260ms ease",
+          transform:
+            direction === "left"
+              ? "translateX(0px)"
+              : "translateX(0px)",
+          opacity: 1,
+          willChange: "transform, opacity",
+          position: "relative",
+          zIndex: 1,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", marginBottom: "12px" }}>
-          <span style={{ fontSize: "28px", marginRight: "12px" }}>{current.icon}</span>
-          <h2 style={{ color: "#BFA86A", fontSize: "20px", margin: 0 }}>{current.title}</h2>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginBottom: "18px",
+          }}
+        >
+          <span
+            style={{
+              fontSize: window.innerWidth < 640 ? "26px" : "28px",
+              marginRight: "12px",
+            }}
+          >
+            {current.icon}
+          </span>
+          <h2
+            style={{
+              color: "#BFA86A",
+              fontSize: window.innerWidth < 640 ? "19px" : "20px",
+              margin: 0,
+              letterSpacing: "0.02em",
+            }}
+          >
+            {current.title}
+          </h2>
         </div>
-        <p style={{ fontStyle: "italic" }}>{current.content}</p>
+        <p
+          style={{
+            fontStyle: "italic",
+            lineHeight: 1.95,
+            fontSize: window.innerWidth < 640 ? "14.5px" : "15px",
+            color: "rgba(255,255,255,0.92)",
+            margin: 0,
+          }}
+        >
+          {current.content}
+        </p>
       </div>
 
       {/* Navigation Buttons */}
-      <div style={{ marginTop: "40px", display: "flex", justifyContent: "space-between", width: "100%", maxWidth: "600px" }}>
-        <button
-          onClick={prev}
-          disabled={index === 0}
+      <div
+        style={{
+          marginTop: "18px",
+          display: "flex",
+          justifyContent: "center",
+          width: "100%",
+          maxWidth: "760px",
+          position: "relative",
+          minHeight: "12px",
+          paddingTop: "0px",
+          zIndex: 1,
+        }}
+      >
+        <div
           style={{
-            padding: "10px 16px",
-            borderRadius: "8px",
-            border: "1px solid rgba(255,255,255,0.12)",
-            background: "rgba(255,255,255,0.06)",
-            color: "rgba(255,255,255,0.9)",
-            fontFamily: "'Georgia', serif",
-            cursor: index === 0 ? "not-allowed" : "pointer",
+            position: "absolute",
+            left: "50%",
+            top: index === sections.length - 1 ? "0px" : "-2px",
+            transform: "translateX(-50%)",
+            display: "flex",
+            gap: "10px",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          Previous
-        </button>
-        {index < sections.length - 1 && (
+          {sections.map((_, i) => (
+            <div
+              key={i}
+              onClick={() => {
+                setDirection(i > index ? "left" : "right");
+                setIndex(i);
+              }}
+              style={{
+                width: i === index ? "20px" : "8px",
+                height: "8px",
+                borderRadius: "999px",
+                background:
+                  i === index
+                    ? "rgba(191,168,106,0.95)"
+                    : "rgba(255,255,255,0.22)",
+                transition: "all 220ms ease",
+                cursor: "pointer",
+              }}
+            />
+          ))}
+        </div>
+        {index === sections.length - 1 && (
           <button
-            onClick={next}
+            onClick={() => setIndex(0)}
             style={{
-              padding: "10px 16px",
-              borderRadius: "8px",
-              border: "1px solid rgba(255,255,255,0.12)",
-              background: "rgba(255,255,255,0.06)",
-              color: "rgba(255,255,255,0.9)",
+              padding: "8px 16px",
+              borderRadius: "999px",
+              border: "1px solid rgba(191,168,106,0.12)",
+              background: "rgba(191,168,106,0.045)",
+              backdropFilter: "blur(10px)",
+              color: "rgba(255,248,230,0.88)",
               fontFamily: "'Georgia', serif",
               cursor: "pointer",
+              transition: "all 180ms ease",
+              letterSpacing: "0.02em",
+              fontSize: "0.82rem",
+              boxShadow: "0 4px 14px rgba(0,0,0,0.14)",
+            position: "absolute",
+            top: "22px",
+            left: "50%",
+            transform: "translateX(-50%)",
             }}
           >
-            Next
+            Done
           </button>
         )}
       </div>
 
-      {index === sections.length - 1 && (
-        <p style={{
-          marginTop: "24px",
-          fontStyle: "italic",
-          fontSize: "12px",
-          lineHeight: 1.4,
-          color: "rgba(255,255,255,0.55)",
-          textAlign: "justify",
-          maxWidth: "600px"
-        }}>
-          Whatever arises, let it arise. Whatever stays, let it stay. Whatever goes, let it go. The awareness that witnesses all of this is your true nature.
-          — Dzogchen instruction
-        </p>
-      )}
-
-      {/* Floating Quote below navigation */}
-      {index === 0 && (
-        <p style={{
-          marginTop: "24px",
-          fontStyle: "italic",
-          fontSize: "12px",
-          lineHeight: 1.4,
-          color: "rgba(255,255,255,0.55)",
-          textAlign: "justify",
-          maxWidth: "600px"
-        }}>
-          "These are normal experiences — don't cling to them." As your practice deepens, you will encounter many different states of mind and body. In the Dzogchen tradition, these are called nyam — temporary meditation experiences that are signs of progress, not destinations.
-        </p>
-      )}
     </div>
   );
 };
